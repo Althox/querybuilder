@@ -1,0 +1,11 @@
+{
+  "name": "querybuilder",
+  "version": "1.0.0",
+  "description": "A TypeScript query builder",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Althox",
+  "license": "ISC"
+}
