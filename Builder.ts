@@ -1,7 +1,5 @@
 import { QueryCombiner } from "./components/QueryCombiner";
-import { Where } from "./components/Where";
-import { Select } from "./components/Select";
-import { PartInterface } from "./components/PartInterface";
+import { Select, WhereIn, Where, Limit, Offset } from "./components/Parts";
 
 export class Builder
 {
@@ -18,15 +16,33 @@ export class Builder
         return (new QueryCombiner(this.queryParts)).combine(this.tableName);
     }
 
-    where(options : PartInterface): Builder
+    select(value : string, param : Array<any> = []): Builder
     {
-        this.queryParts.push(new Where(options))
+        this.queryParts.push(new Select(value, param));
         return this;
     }
 
-    select(options : PartInterface): Builder
+    where(value : string, param : Array<any> = []): Builder
     {
-        this.queryParts.push(new Select(options))
+        this.queryParts.push(new Where(value, param));
+        return this;
+    }
+
+    whereIn(value : string, builder : Builder): Builder
+    {
+        this.queryParts.push(new WhereIn(value, builder));
+        return this;
+    }
+
+    limit(limit : number): Builder
+    {
+        this.queryParts.push(new Limit(limit));
+        return this;
+    }
+
+    offset(offset : number): Builder
+    {
+        this.queryParts.push(new Offset(offset));
         return this;
     }
 }
