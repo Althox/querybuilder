@@ -31,9 +31,6 @@ export class QueryCombiner
                     select += (firstSelect) ? part.get() : `,${part.get()}`;
                     firstSelect = false;
                     break;
-                // case 'Limit':
-                //     query += ` limit ${part.get()}`;
-                //     break;
                 default:
                     query += part.get();
                     break;

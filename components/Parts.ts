@@ -2,23 +2,6 @@ import { Builder } from "../Builder";
 import { BindingInterface } from "./BindingInterface";
 import { format } from "./HelperFunctions";
 
-export class WhereIn implements BindingInterface
-{
-    private value : string;
-    private builder : Builder;
-
-    constructor(value : string, builder : Builder)
-    {
-        this.value = value;
-        this.builder = builder;
-    }
-
-    get(): string
-    {
-        return `${this.value} in(${this.builder.getQuery()})`;
-    }
-}
-
 export class Select implements BindingInterface
 {
     private value : string;
@@ -32,7 +15,7 @@ export class Select implements BindingInterface
 
     get(): string
     {
-        return format(this.value, this.param);
+        return format(this.value, this.param, false);
     }
 }
 
@@ -50,6 +33,23 @@ export class Where implements BindingInterface
     get(): string
     {
         return format(this.value, this.param);
+    }
+}
+
+export class WhereIn implements BindingInterface
+{
+    private value : string;
+    private builder : Builder;
+
+    constructor(value : string, builder : Builder)
+    {
+        this.value = value;
+        this.builder = builder;
+    }
+
+    get(): string
+    {
+        return `${this.value} in(${this.builder.getQuery()})`;
     }
 }
 

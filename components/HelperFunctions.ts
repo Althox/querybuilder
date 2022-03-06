@@ -1,6 +1,9 @@
-function format(message : string, params : Array<any>): string
+export function format(
+    message : string,
+    params : Array<any>,
+    wrapAsString : boolean = true
+): string
 {
-    return message.replace(RegExp(/(\?)/g), () => `'${params.shift()}'`);
+    let parameterOut = (wrapAsString) ? `'${params.shift()}'` : `${params.shift()}`
+    return message.replace(RegExp(/(\?)/g), () => parameterOut);
 }
-
-export {format}
