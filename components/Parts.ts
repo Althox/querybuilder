@@ -53,6 +53,36 @@ export class WhereIn implements BindingInterface
     }
 }
 
+export class WhereExists implements BindingInterface
+{
+    private builder : Builder;
+
+    constructor(builder : Builder)
+    {
+        this.builder = builder;
+    }
+
+    get(): string
+    {
+        return `exists (${this.builder.getQuery()})`;
+    }
+}
+
+export class WhereNotExists implements BindingInterface
+{
+    private builder : Builder;
+
+    constructor(builder : Builder)
+    {
+        this.builder = builder;
+    }
+
+    get(): string
+    {
+        return `not exists (${this.builder.getQuery()})`;
+    }
+}
+
 export class Limit implements BindingInterface
 {
     private limit : number;
@@ -80,5 +110,20 @@ export class Offset implements BindingInterface
     get(): string
     {
         return ` offset = ${this.offset.toString()}`;
+    }
+}
+
+export class OrderBy implements BindingInterface
+{
+    private orderBy : string;
+
+    constructor(orderBy : string)
+    {
+        this.orderBy = orderBy;
+    }
+
+    get(): string
+    {
+        return ` order by ${this.orderBy}`;
     }
 }

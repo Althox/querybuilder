@@ -9,21 +9,30 @@ Optionally, if you would like to use ES6 modules instead of TypeScript, you can 
 ```typescript
 import { Builder } from "./Builder";
 
-const Table = Builder;
+let lookForActiveOnly : boolean = true;
 
-let table = (new Table("persons"))
+let query = (new Builder("persons"))
     .select("id,first_name")
-    .select("last_name")
     .where("first_name = ?", ['anna'])
-    .whereIn("id", (new Table("person_account"))
+    .whereIn("id", (new Builder("person_account"))
         .select("person_id")
         .where("current_balance > ?", [123])
     )
-    .where("id > 1")
-    .offset(10)
-    .limit(1);
+    .select("?", ['last_name']);
 
-console.log(table.getQuery());
+if (lookForActiveOnly) {
+    query.whereExists((new Builder("person_account_status pas"))
+        .select("1")
+        .where("pas.status_id = ?", [21])
+        .where("pas.person_id = persons.id")
+    );
+}
+
+query.offset(10)
+    .limit(1)
+    .orderBy("first_name asc");
+
+console.log(query.getQuery());
 ```
 This should output something like this, without the indents and row breaks:
 ```sql
@@ -32,12 +41,18 @@ select id,
     last_name
 from persons
 where first_name = 'anna'
-    and id in (
+    and id in(
         select person_id
         from person_account
         where current_balance > '123'
     )
-    and id > 1
+    and exists (
+        select 1
+        from person_account_status pas
+        where pas.status_id = '21'
+            and pas.person_id = persons.id
+    )
+order by first_name asc
 offset = 10
 limit 1
 ```
@@ -74,7 +89,7 @@ let query = (new Builder("persons"))
 
 console.log(query.getQuery());
 ```
-The above example woud output the following query:
+The above example would output the following query:
 ```sql
 select *
 from persons
@@ -83,4 +98,17 @@ where id in(
     from person_account
     where current_balance > '123'
 )
+```
+### Exists & Not Exists
+Both of these functions only accepts a "Builder" object as parameter and works in a similar way as "WhereIn".
+```typescript
+(new Builder("persons"))
+    .whereExists((new Builder("persons"))
+    .select("1")
+    .where("foo = 'bar'"));
+
+(new Builder("persons"))
+    .whereNotExists((new Builder("persons"))
+    .select("1")
+    .where("foo = 'bar'"));
 ```

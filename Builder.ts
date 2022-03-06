@@ -1,5 +1,6 @@
 import { QueryCombiner } from "./components/QueryCombiner";
-import { Select, WhereIn, Where, Limit, Offset } from "./components/Parts";
+import { Select, WhereIn, Where, WhereExists, WhereNotExists, Limit, Offset,
+    OrderBy } from "./components/Parts";
 
 export class Builder
 {
@@ -34,6 +35,18 @@ export class Builder
         return this;
     }
 
+    whereExists(builder : Builder): Builder
+    {
+        this.queryParts.push(new WhereExists(builder));
+        return this;
+    }
+
+    whereNotExists(builder : Builder): Builder
+    {
+        this.queryParts.push(new WhereNotExists(builder));
+        return this;
+    }
+
     limit(limit : number): Builder
     {
         this.queryParts.push(new Limit(limit));
@@ -43,6 +56,12 @@ export class Builder
     offset(offset : number): Builder
     {
         this.queryParts.push(new Offset(offset));
+        return this;
+    }
+
+    orderBy(orderBy : string): Builder
+    {
+        this.queryParts.push(new OrderBy(orderBy));
         return this;
     }
 }

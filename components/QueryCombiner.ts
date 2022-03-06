@@ -1,5 +1,3 @@
-import { Select, Where, WhereIn, Limit, Offset } from "./Parts";
-
 export class QueryCombiner
 {
     private queryParts : Array<any>;
@@ -19,10 +17,14 @@ export class QueryCombiner
         var firstWhere : boolean = true;
         var firstSelect : boolean = true;
 
+        this.sortParts();
+
         this.queryParts.forEach((part) => {
             switch (part.constructor.name) {
                 case 'Where':
                 case 'WhereIn':
+                case 'WhereExists':
+                case 'WhereNotExists':
                     let prefix = (firstWhere) ? ' where ' : ' and ';
                     where += `${prefix}${part.get()}`
                     firstWhere = false;
