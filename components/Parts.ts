@@ -1,6 +1,42 @@
-import { Builder } from "../Builder";
+import { Builder } from "./Builder";
 import { BindingInterface } from "./BindingInterface";
 import { format } from "./HelperFunctions";
+
+export class Join implements BindingInterface
+{
+    private joinedTable : string;
+    private joinPrefix : string;
+    private onJoinQuery : string|Builder;
+
+    constructor(joinedTable : string, onJoinQuery : string|Builder)
+    {
+        this.joinPrefix = "";
+        this.joinedTable = joinedTable;
+        this.onJoinQuery = onJoinQuery;
+    }
+
+    prefix(joinPrefix : string): Join
+    {
+        this.joinPrefix = joinPrefix;
+        return this;
+    }
+
+    get(): string {
+        if (typeof this.onJoinQuery == "string") {
+            if (this.joinPrefix != '') {
+                return `${this.joinPrefix} join ${this.joinedTable} on (${this.onJoinQuery})`;
+            } else {
+                return `join ${this.joinedTable} on (${this.onJoinQuery})`;
+            }
+        } else {
+            if (this.joinPrefix != '') {
+                return `${this.joinPrefix} join ${this.joinedTable} on(${this.onJoinQuery.getQuery()})`;
+            } else {
+                return `join ${this.joinedTable} on (${this.onJoinQuery.getQuery()})`;
+            }
+        }
+    }
+}
 
 export class Select implements BindingInterface
 {

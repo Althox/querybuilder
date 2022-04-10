@@ -10,12 +10,14 @@ export class QueryCombiner
     combine(tableName : string): string
     {
         var query : string = '';
-        var select : string = '';
         var where : string = '';
+        var join : string = '';
+        var select : string = '';
 
         //TODO: Fix this, this is beyond optimal
         var firstWhere : boolean = true;
         var firstSelect : boolean = true;
+        var firstJoin : boolean = true;
 
         this.sortParts();
 
@@ -33,6 +35,9 @@ export class QueryCombiner
                     select += (firstSelect) ? part.get() : `,${part.get()}`;
                     firstSelect = false;
                     break;
+                case 'Join':
+                    join += ' ' + part.get();
+                    break;
                 default:
                     query += part.get();
                     break;
@@ -41,14 +46,18 @@ export class QueryCombiner
 
         if (select.trim() == '') select += '*';
 
-        query = `select ${select} from ${tableName}${where}${query}`;
+        if (join == '') {
+            query = `select ${select} from ${tableName}${where}${query}`;
+        } else {
+            query = `select ${select} from ${tableName}${join}${where}${query}`;
+        }
 
         return query;
     }
 
     sortParts()
     {
-        let sortOrder = {Select: 1, Where: 2, OrderBy: 3, Offset: 4, Limit: 5};
+        let sortOrder = {Join: 1, Select: 2, Where: 3, OrderBy: 4, Offset: 5, Limit: 6};
         this.queryParts.sort(function(partA, partB)
         {
             return sortOrder[partA.constructor.name] - sortOrder[partB.constructor.name];

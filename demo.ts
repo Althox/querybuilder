@@ -1,8 +1,13 @@
-import { Builder } from "./Builder";
+import { Builder } from "./components/Builder";
 
 let lookForActiveOnly : boolean = true;
 
 let query = (new Builder("persons"))
+    .join("cool_people", (new Builder("cool_people"))
+        .select("1")
+        .where("cool_people.person_id = person.id")
+        .where("cool_people.sunglasses = true"))
+    .rightOuterJoin("less_cool_people", "less_cool_people.person_id = person.id")
     .select("id,first_name")
     .where("first_name = ?", ['anna'])
     .whereIn("id", (new Builder("person_account"))
