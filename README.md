@@ -3,11 +3,11 @@
 A simple Query Builder made in TypeScript.
 I started this project in order to get something to use in my own projects when having modular queries in Node.
 
-Optionally, if you would like to use ES6 modules instead of TypeScript, you can use the files provided in the "build" folder.
+The project build output are ES6 modules and is provided in the "build" folder.
 
 ## How to use the builder
 ```typescript
-import { Builder } from "./Builder";
+import { Builder } from "./components/Builder";
 
 let lookForActiveOnly : boolean = true;
 
